@@ -5,4 +5,8 @@
     <RootNamespace>trakker_server</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\trakker-snapshot-provider\trakker-models\trakker-models\trakker-models\trakker-models.csproj" />
+  </ItemGroup>
+
 </Project>
