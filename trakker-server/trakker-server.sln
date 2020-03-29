@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "trakker-server", "trakker-server\trakker-server.csproj", "{087C6325-2F4E-4301-95F7-4EA2361AB9E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrakkerServer", "trakker-server\TrakkerServer.csproj", "{087C6325-2F4E-4301-95F7-4EA2361AB9E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "trakker-models", "..\trakker-snapshot-provider\trakker-models\trakker-models\trakker-models\trakker-models.csproj", "{7562B9A8-4BEC-49F9-946E-200003FF8EDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrakkerModels", "..\trakker-snapshot-provider\trakker-models\trakker-models\trakker-models\TrakkerModels.csproj", "{7562B9A8-4BEC-49F9-946E-200003FF8EDE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnapshotProvider", "..\trakker-snapshot-provider\SnapshotProvider\SnapshotProvider\SnapshotProvider.csproj", "{06083289-098B-4433-8DF0-F6217B6D5F4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrakkerServerTests", "TrakkerServerTests\TrakkerServerTests.csproj", "{BAF80FA5-3EB6-46DE-A122-9C900A2B7280}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{06083289-098B-4433-8DF0-F6217B6D5F4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06083289-098B-4433-8DF0-F6217B6D5F4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06083289-098B-4433-8DF0-F6217B6D5F4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAF80FA5-3EB6-46DE-A122-9C900A2B7280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAF80FA5-3EB6-46DE-A122-9C900A2B7280}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAF80FA5-3EB6-46DE-A122-9C900A2B7280}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAF80FA5-3EB6-46DE-A122-9C900A2B7280}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
