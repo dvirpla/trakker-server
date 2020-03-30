@@ -55,9 +55,9 @@ namespace TrakkerServerTests
             // Assert
             Assert.AreEqual(loadedUser.Uuid, user.Uuid);
             Assert.AreEqual(loadedUser.SnapshotIds.Count, user.SnapshotIds.Count);
-            foreach (var snapshot in loadedUser.SnapshotIds)
+            foreach (var snapshot in user.SnapshotIds)
             {
-                Assert.IsTrue(user.SnapshotIds.Contains(snapshot));
+                Assert.IsTrue(loadedUser.SnapshotIds.Contains(snapshot));
             }
 
         }
