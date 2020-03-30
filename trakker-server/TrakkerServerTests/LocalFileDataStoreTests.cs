@@ -12,7 +12,7 @@ namespace TrakkerServerTests
     public class LocalFileDataStoreTests
     {
         [TestMethod]
-        public void TestSnapshotSerializeAndDeserialize()
+        public void SnapshotSaveAndLoadTest()
         {
             // Arrange
             var localFileDataStore = new LocalFileDataStore(new FileObjectSerializer());
@@ -32,7 +32,7 @@ namespace TrakkerServerTests
         }
 
         [TestMethod]
-        public void TestGetUser()
+        public void GetUserMultipleSnapshotsTest()
         {
             // Arrange
             var localFileDataStore = new LocalFileDataStore(new FileObjectSerializer());
@@ -53,8 +53,8 @@ namespace TrakkerServerTests
             var loadedUser = localFileDataStore.GetUser(userId);
 
             // Assert
-            Assert.AreEqual(loadedUser.Uuid, loadedUser.Uuid);
-            Assert.AreEqual(loadedUser.SnapshotIds.Count, loadedUser.SnapshotIds.Count);
+            Assert.AreEqual(loadedUser.Uuid, user.Uuid);
+            Assert.AreEqual(loadedUser.SnapshotIds.Count, user.SnapshotIds.Count);
             foreach (var snapshot in loadedUser.SnapshotIds)
             {
                 Assert.IsTrue(user.SnapshotIds.Contains(snapshot));
