@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrakkerModels", "..\trakker
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnapshotProvider", "..\trakker-snapshot-provider\SnapshotProvider\SnapshotProvider\SnapshotProvider.csproj", "{06083289-098B-4433-8DF0-F6217B6D5F4D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrakkerServerTests", "TrakkerServerTests\TrakkerServerTests.csproj", "{BAF80FA5-3EB6-46DE-A122-9C900A2B7280}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrakkerServerTests", "TrakkerServerTests\TrakkerServerTests.csproj", "{58F240A5-539F-4652-B94F-C9B8FDC2C56F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{06083289-098B-4433-8DF0-F6217B6D5F4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06083289-098B-4433-8DF0-F6217B6D5F4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06083289-098B-4433-8DF0-F6217B6D5F4D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BAF80FA5-3EB6-46DE-A122-9C900A2B7280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BAF80FA5-3EB6-46DE-A122-9C900A2B7280}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BAF80FA5-3EB6-46DE-A122-9C900A2B7280}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BAF80FA5-3EB6-46DE-A122-9C900A2B7280}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58F240A5-539F-4652-B94F-C9B8FDC2C56F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58F240A5-539F-4652-B94F-C9B8FDC2C56F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58F240A5-539F-4652-B94F-C9B8FDC2C56F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58F240A5-539F-4652-B94F-C9B8FDC2C56F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

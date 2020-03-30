@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using TrakkerModels;
@@ -24,9 +25,9 @@ namespace TrakkerServer.DataStore
                 throw new InvalidOperationException("User doesn't exists");
             }
 
-            var snapshotIds = Directory.EnumerateFiles(userFolder).Select(snapshot => new Guid(snapshot)).ToList();
+            var snapshotIds = Directory.EnumerateFiles(userFolder).Select(snapshot => new Guid(Path.GetFileNameWithoutExtension(snapshot))).ToList();
             
-            return new User() {Uuid = userId, SnapshotIds = snapshotIds};
+            return new User(userId) {SnapshotIds = snapshotIds};
         }
 
         public Snapshot GetSnapshot(Guid snapshotId, User snapshotOwner)
@@ -37,7 +38,7 @@ namespace TrakkerServer.DataStore
                 throw new InvalidOperationException("User doesn't exists");
             }
 
-            var snapshotFilePath = Path.Combine(userFolder, snapshotId.ToString());
+            var snapshotFilePath = Path.Combine(userFolder, snapshotId + ".snp");
             if (!File.Exists(snapshotFilePath))
             {
                 throw new InvalidOperationException("Snapshot doesn't exists");
@@ -56,9 +57,11 @@ namespace TrakkerServer.DataStore
                 Directory.CreateDirectory(userFolder);
             }
 
-            var snapshotFilePath = Path.Combine(userFolder, snapshot.Uuid.ToString());
+            var snapshotFilePath = Path.Combine(userFolder, snapshot.Uuid + ".snp");
+            File.Create(snapshotFilePath).Close();
             var snapshotFileStream = new FileStream(snapshotFilePath, FileMode.Open);
             this.Serializer.Serialize(snapshotFileStream, snapshot);
+            snapshotOwner.SnapshotIds.Add(snapshot.Uuid);
             snapshotFileStream.Close();
         }
     }
