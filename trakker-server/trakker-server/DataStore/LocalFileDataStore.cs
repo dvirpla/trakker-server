@@ -14,14 +14,20 @@ namespace TrakkerServer.DataStore
         {
             this.Serializer = serializer;
         }
+
         public IObjectSerializer Serializer { get; set; }
+
+        // CR: This function has several references and the return value doesn't change.
+        // I would add a new property and initialize this property in the constructor
         private static string GetLocalWorkingFolderPath() => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TrakkerServer");
 
+        // CR: Add function comment
         public User GetUser(Guid userId)
         {
             var userFolder = Path.Combine(GetLocalWorkingFolderPath(), userId.ToString());
             if (!Directory.Exists(userFolder))
             {
+                // CR: Consider implementing custom Exceptions
                 throw new InvalidOperationException("User doesn't exists");
             }
 
@@ -30,17 +36,21 @@ namespace TrakkerServer.DataStore
             return new User(userId) {SnapshotIds = snapshotIds};
         }
 
+        // CR: Add function comment
         public Snapshot GetSnapshot(Guid snapshotId, User snapshotOwner)
         {
             var userFolder = (Path.Combine(GetLocalWorkingFolderPath(), snapshotOwner.Uuid.ToString()));
             if (!Directory.Exists(userFolder))
             {
+                // CR: Consider implementing custom Exceptions
                 throw new InvalidOperationException("User doesn't exists");
             }
 
+            // CR: I would move the extension string to const
             var snapshotFilePath = Path.Combine(userFolder, snapshotId + ".snp");
             if (!File.Exists(snapshotFilePath))
             {
+                // CR: Consider implementing custom Exceptions
                 throw new InvalidOperationException("Snapshot doesn't exists");
             }
             var snapshotFileStream = new FileStream(snapshotFilePath, FileMode.Open);
@@ -57,6 +67,7 @@ namespace TrakkerServer.DataStore
                 Directory.CreateDirectory(userFolder);
             }
 
+            // CR: I would move the extension string to const
             var snapshotFilePath = Path.Combine(userFolder, snapshot.Uuid + ".snp");
             File.Create(snapshotFilePath).Close();
             var snapshotFileStream = new FileStream(snapshotFilePath, FileMode.Open);
