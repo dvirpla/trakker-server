@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace>TrakkerServer</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <LangVersion>8.0</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\trakker-snapshot-provider\trakker-models\trakker-models\trakker-models\TrakkerModels.csproj" />
+    </ItemGroup>
+
+</Project>
