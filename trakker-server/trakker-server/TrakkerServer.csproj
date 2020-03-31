@@ -10,7 +10,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\trakker-snapshot-provider\trakker-models\trakker-models\trakker-models\TrakkerModels.csproj" />
+      <ProjectReference Include="..\..\..\trakker-models\trakker-models\trakker-models\TrakkerModels.csproj" />
+      <ProjectReference Include="..\..\..\trakker-snapshot-provider\SnapshotProvider\SnapshotProvider\SnapshotProvider.csproj" />
     </ItemGroup>
 
 </Project>
