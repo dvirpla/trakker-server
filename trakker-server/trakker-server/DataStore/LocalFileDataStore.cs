@@ -22,11 +22,9 @@ namespace TrakkerServer.DataStore
                 WorkingFolderName);
         }
 
-        // CR: Remove redundant setter
-        private IObjectSerializer<Snapshot> Serializer { get; set; }
+        private IObjectSerializer<Snapshot> Serializer { get; }
 
-        // CR: Remove redundant setter
-        private string LocalWorkingFolder { get; set; }
+        private string LocalWorkingFolder { get; }
 
         private string GetUserFolderPath(Guid userId)
         {
@@ -74,15 +72,10 @@ namespace TrakkerServer.DataStore
                 throw new SnapshotNotFoundException($"Snapshot {snapshotId} of User {snapshotOwner.Uuid} doesn't exists");
             }
 
-            Snapshot snapshot;
             using (var snapshotFileStream = new FileStream(snapshotFilePath, FileMode.Open))
             {
-                // CR: Remove redundant casting
-                // CR: Just put the return statement here
-                snapshot = (Snapshot)this.Serializer.Deserialize(snapshotFileStream);
-
+                return this.Serializer.Deserialize(snapshotFileStream);
             }
-            return snapshot;
         }
 
         /// <summary>
@@ -92,8 +85,7 @@ namespace TrakkerServer.DataStore
         /// <param name="snapshotOwner">The user to save the snapshot for</param>
         public void SaveSnapshot(Snapshot snapshot, User snapshotOwner)
         {
-            // CR: Use GetUserFolderPath(..) here
-            var userFolder = Path.Combine(this.LocalWorkingFolder, snapshotOwner.Uuid.ToString());
+            var userFolder = this.GetUserFolderPath(snapshotOwner.Uuid);
             if (!Directory.Exists(userFolder))
             {
                 Directory.CreateDirectory(userFolder);
