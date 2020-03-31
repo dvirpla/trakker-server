@@ -5,12 +5,10 @@ using System.Text;
 
 namespace TrakkerServer.DataStore
 {
-    public interface IObjectSerializer
+    public interface IObjectSerializer<T>
     {
-        // CR: I think that a generic method will be better in this case
-        void Serialize(Stream stream, object objectToSerialize);
+        void Serialize(Stream stream, T objectToSerialize);
 
-        // CR: I think that a generic method will be better in this case
-        object Deserialize(Stream stream);
+        T Deserialize(Stream stream);
     }
 }

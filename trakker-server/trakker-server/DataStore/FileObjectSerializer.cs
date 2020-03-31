@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -7,9 +8,9 @@ using System.Text;
 
 namespace TrakkerServer.DataStore
 {
-    public class FileObjectSerializer : IObjectSerializer
+    public class FileObjectSerializer<T> : IObjectSerializer<T>
     {
-        public void Serialize(Stream stream, object objectToSerialize)
+        public void Serialize(Stream stream, T objectToSerialize)
         {
             // Construct a BinaryFormatter and use it to serialize the data to the stream.
             var formatter = new BinaryFormatter();
@@ -19,24 +20,22 @@ namespace TrakkerServer.DataStore
             }
             catch (SerializationException e)
             {
-                // CR: Use Debug.WriteLine
-                Console.WriteLine("Failed to serialize. Reason: " + e.Message);
+                Debug.WriteLine("Failed to serialize. Reason: " + e.Message);
                 throw;
             }
         }
 
-        public object Deserialize(Stream stream)
+        public T Deserialize(Stream stream)
         {
             var formatter = new BinaryFormatter();
             try
             {
                 // Deserialize the hashtable from the file and return it
-                return formatter.Deserialize(stream);
+                return (T)formatter.Deserialize(stream);
             }
             catch (SerializationException e)
             {
-                // CR: Use Debug.WriteLine
-                Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
+                Debug.WriteLine("Failed to deserialize. Reason: " + e.Message);
                 throw;
             }
 

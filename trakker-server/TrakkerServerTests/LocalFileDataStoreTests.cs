@@ -15,7 +15,7 @@ namespace TrakkerServerTests
         public void SnapshotSaveAndLoadTest()
         {
             // Arrange
-            var localFileDataStore = new LocalFileDataStore(new FileObjectSerializer());
+            var localFileDataStore = new LocalFileDataStore(new FileObjectSerializer<Snapshot>());
             var timeNow = DateTime.Now;
             var snapshotUuid = Guid.NewGuid();
             var snapshotToSave = new Snapshot() {Time = timeNow, Uuid = snapshotUuid};
@@ -35,7 +35,7 @@ namespace TrakkerServerTests
         public void GetUserMultipleSnapshotsTest()
         {
             // Arrange
-            var localFileDataStore = new LocalFileDataStore(new FileObjectSerializer());
+            var localFileDataStore = new LocalFileDataStore(new FileObjectSerializer<Snapshot>());
             var timeNow = DateTime.Now;
             var snapshotOneUuid = Guid.NewGuid();
             var snapshotTwoUuid = Guid.NewGuid();
