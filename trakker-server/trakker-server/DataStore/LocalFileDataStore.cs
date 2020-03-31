@@ -14,6 +14,7 @@ namespace TrakkerServer.DataStore
         private const string WorkingFolderName = "TrakkerServer";
 
         private const string SnapshotFileExtension = ".snp";
+
         public LocalFileDataStore(IObjectSerializer<Snapshot> serializer)
         {
             this.Serializer = serializer;
@@ -21,8 +22,10 @@ namespace TrakkerServer.DataStore
                 WorkingFolderName);
         }
 
+        // CR: Remove redundant setter
         private IObjectSerializer<Snapshot> Serializer { get; set; }
 
+        // CR: Remove redundant setter
         private string LocalWorkingFolder { get; set; }
 
         private string GetUserFolderPath(Guid userId)
@@ -31,10 +34,11 @@ namespace TrakkerServer.DataStore
         }
 
         /// <summary>
-        /// this function returns the user from the user id
+        /// Get a user by their ID.
         /// </summary>
-        /// <param name="userId">the id of the user</param>
-        /// <returns>the user</returns>
+        /// <param name="userId">The ID of the user</param>
+        /// <returns>User</returns>
+        /// <exception cref="UserNotFoundException">Thrown when the given user ID does not have a corresponding folder</exception>
         public User GetUser(Guid userId)
         {
             var userFolder = this.GetUserFolderPath(userId);
@@ -51,9 +55,11 @@ namespace TrakkerServer.DataStore
         /// <summary>
         /// Get a user snapshot from the disk using the serializer.
         /// </summary>
-        /// <param name="snapshotId">the id of the snapshot to get</param>
-        /// <param name="snapshotOwner">the user that owns the snapshot</param>
-        /// <returns>the snapshot</returns>
+        /// <param name="snapshotId">The ID of the snapshot to get</param>
+        /// <param name="snapshotOwner">The user that owns the snapshot</param>
+        /// <returns>Snapshot</returns>
+        /// <exception cref="UserNotFoundException">Thrown when the given user ID does not have a corresponding folder</exception>
+        /// <exception cref="SnapshotNotFoundException">Thrown when the given snapshot ID does not have a corresponding file</exception>
         public Snapshot GetSnapshot(Guid snapshotId, User snapshotOwner)
         {
             var userFolder = this.GetUserFolderPath(snapshotOwner.Uuid);
@@ -71,6 +77,8 @@ namespace TrakkerServer.DataStore
             Snapshot snapshot;
             using (var snapshotFileStream = new FileStream(snapshotFilePath, FileMode.Open))
             {
+                // CR: Remove redundant casting
+                // CR: Just put the return statement here
                 snapshot = (Snapshot)this.Serializer.Deserialize(snapshotFileStream);
 
             }
@@ -84,6 +92,7 @@ namespace TrakkerServer.DataStore
         /// <param name="snapshotOwner">The user to save the snapshot for</param>
         public void SaveSnapshot(Snapshot snapshot, User snapshotOwner)
         {
+            // CR: Use GetUserFolderPath(..) here
             var userFolder = Path.Combine(this.LocalWorkingFolder, snapshotOwner.Uuid.ToString());
             if (!Directory.Exists(userFolder))
             {
