@@ -6,9 +6,8 @@ namespace TrakkerServer.DataStore
 {
     public interface IDataStore
     {
-        public User GetUser(Guid userId);
-        public Snapshot GetSnapshot(Guid snapshotId, User snapshotOwner);
-        public void SaveSnapshot(Snapshot snapshot, User snapshotOwner);
-
+        User GetUser(Guid userId);
+        Snapshot GetSnapshot(Guid snapshotId, User snapshotOwner);
+        void SaveSnapshot(Snapshot snapshot, User snapshotOwner);
     }
 }

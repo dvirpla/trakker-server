@@ -12,7 +12,11 @@ namespace TrakkerServer.Models
             this.Uuid = uuid;
             this.SnapshotIds = new List<Guid>();
         }
+
+        // CR: (Kfir) Make the property readonly (no setter), I don't think the values ever changes
         public Guid Uuid { get; set; }
+
+        // CR: (Kfir) Make the property readonly (no setter), I don't think the values ever changes
         public List<Guid> SnapshotIds { get; set; }
     }
 }

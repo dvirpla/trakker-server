@@ -19,6 +19,7 @@ namespace TrakkerServer.DataStore
             }
             catch (SerializationException e)
             {
+                // CR: Use Debug.WriteLine
                 Console.WriteLine("Failed to serialize. Reason: " + e.Message);
                 throw;
             }
@@ -29,11 +30,12 @@ namespace TrakkerServer.DataStore
             var formatter = new BinaryFormatter();
             try
             {
-                // Deserialize the hashtable from the file and returns it.
+                // Deserialize the hashtable from the file and return it
                 return formatter.Deserialize(stream);
             }
             catch (SerializationException e)
             {
+                // CR: Use Debug.WriteLine
                 Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
                 throw;
             }
