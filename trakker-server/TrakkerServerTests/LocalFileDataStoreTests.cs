@@ -28,7 +28,7 @@ namespace TrakkerServerTests
             // Assert
             Assert.AreEqual(snapshotToSave.Uuid, loadedSnapshot.Uuid);
             Assert.AreEqual(snapshotToSave.Time, loadedSnapshot.Time);
-            Assert.AreEqual(snapshotToSave.Drive?.Name, loadedSnapshot.Drive?.Name);
+            Assert.AreEqual(snapshotToSave.Drive?.FullPath, loadedSnapshot.Drive?.FullPath);
         }
 
         [TestMethod]
