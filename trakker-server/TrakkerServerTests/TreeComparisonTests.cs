@@ -20,6 +20,7 @@ namespace TrakkerServerTests
             List<FileSystemNode> secondList)
         {
             #region Lists initializing
+
             var itemMapping = new Dictionary<string, FileSystemNode>();
             var visited = new Dictionary<string, bool>();
 
@@ -28,6 +29,7 @@ namespace TrakkerServerTests
                 visited[item1.FullPath] = false;
                 itemMapping[item1.FullPath] = item1;
             }
+
             #endregion
 
             foreach (var item2 in secondList)
@@ -49,14 +51,14 @@ namespace TrakkerServerTests
                         if (isDir)
                         {
                             var item1dir = existingItem as DirectoryInfo;
-                            yield return new ChangedDirectory(item2.FullPath, item2.Size,
-                                ChangedSystemNodeStatus.Modified, new List<FileSystemNode>(
-                                    CompareFlatListsRecursive(item1dir?.Children, item2dir.Children)), item1dir);
+                            yield return new ChangedDirectory(item2.FullPath, item2.Size, new List<FileSystemNode>(
+                                    CompareFlatListsRecursive(item1dir.Children, item2dir.Children)),
+                                ChangedSystemNodeStatus.Modified, item1dir.Size);
                         }
                         else
                         {
                             yield return new ChangedFile(existingItem.FullPath, item2.Size,
-                                ChangedSystemNodeStatus.Modified, existingItem);
+                                ChangedSystemNodeStatus.Modified, existingItem.Size);
                         }
                     }
                 }
@@ -65,9 +67,9 @@ namespace TrakkerServerTests
                 {
                     if (isDir)
                     {
-                        // TODO: Make all children New.
-                        yield return new ChangedDirectory(item2.FullPath, item2.Size, ChangedSystemNodeStatus.New,
-                            item2dir.Children);
+                        yield return new ChangedDirectory(item2.FullPath, item2.Size,
+                            ChangeStatusForChildren(item2dir.Children, ChangedSystemNodeStatus.New).ToList(),
+                            ChangedSystemNodeStatus.New);
                     }
                     else
                     {
@@ -86,13 +88,48 @@ namespace TrakkerServerTests
                 {
                     if (isDir)
                     {
-                        // TODO: Make all children deleted.
-                        yield return new ChangedDirectory(item1.FullPath, 0, ChangedSystemNodeStatus.Deleted,
-                            item1dir.Children, item1);
+                        yield return new ChangedDirectory(item1.FullPath, 0,
+                            ChangeStatusForChildren(item1dir.Children, ChangedSystemNodeStatus.Deleted).ToList(),
+                            ChangedSystemNodeStatus.Deleted, item1.Size);
                     }
                     else
                     {
-                        yield return new ChangedFile(item1.FullPath, 0, ChangedSystemNodeStatus.Deleted, item1);
+                        yield return new ChangedFile(item1.FullPath, 0, ChangedSystemNodeStatus.Deleted, item1.Size);
+                    }
+                }
+            }
+        }
+
+        private static IEnumerable<FileSystemNode> ChangeStatusForChildren(List<FileSystemNode> children,
+            ChangedSystemNodeStatus statusToChange)
+        {
+            foreach (var child in children)
+            {
+                var childDir = child as DirectoryInfo;
+                var isDir = childDir != null;
+                if (isDir)
+                {
+                    if (statusToChange == ChangedSystemNodeStatus.New)
+                    {
+                        yield return new ChangedDirectory(childDir.FullPath, childDir.Size,
+                            ChangeStatusForChildren(childDir.Children, statusToChange).ToList(), statusToChange);
+                    }
+                    else
+                    {
+                        yield return new ChangedDirectory(childDir.FullPath, childDir.Size,
+                            ChangeStatusForChildren(childDir.Children, statusToChange).ToList(), statusToChange,
+                            childDir.Size);
+                    }
+                }
+                else
+                {
+                    if (statusToChange == ChangedSystemNodeStatus.New)
+                    {
+                        yield return new ChangedFile(child.FullPath, child.Size, statusToChange);
+                    }
+                    else
+                    {
+                        yield return new ChangedFile(child.FullPath, child.Size, statusToChange, child.Size);
                     }
                 }
             }
@@ -101,7 +138,7 @@ namespace TrakkerServerTests
         [TestMethod]
         public void CompareTreeTestUsingSnapshot()
         {
-            
+
             var snapshotProvider = new global::SnapshotProvider.SnapshotProvider();
             var drive1 = snapshotProvider.GetDriveInfo(@"C:\");
             var x = 1;
@@ -139,7 +176,7 @@ namespace TrakkerServerTests
                 new TrakkerModels.FileInfo(350, "C:\\root\\modified.txt"),
                 new TrakkerModels.FileInfo(2, "C:\\root\\unchanged.txt")
             });
-
+            var z = ChangeStatusForChildren(root1.Children, ChangedSystemNodeStatus.New).ToList();
             var x = CompareFlatListsRecursive(root1.Children, root2.Children).ToList();
             var y = 1;
         }
