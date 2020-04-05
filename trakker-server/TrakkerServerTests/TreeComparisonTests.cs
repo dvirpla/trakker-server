@@ -19,6 +19,7 @@ namespace TrakkerServerTests
         private static IEnumerable<FileSystemNode> CompareFlatListsRecursive(List<FileSystemNode> firstList,
             List<FileSystemNode> secondList)
         {
+            #region Lists initializing
             var itemMapping = new Dictionary<string, FileSystemNode>();
             var visited = new Dictionary<string, bool>();
 
@@ -27,6 +28,7 @@ namespace TrakkerServerTests
                 visited[item1.FullPath] = false;
                 itemMapping[item1.FullPath] = item1;
             }
+            #endregion
 
             foreach (var item2 in secondList)
             {
