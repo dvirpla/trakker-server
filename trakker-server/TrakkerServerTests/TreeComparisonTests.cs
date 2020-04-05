@@ -9,63 +9,52 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TrakkerModels;
 using DirectoryInfo = TrakkerModels.DirectoryInfo;
 using FileInfo = TrakkerModels.FileInfo;
+using SnapshotProvider = SnapshotProvider.SnapshotProvider;
 
 namespace TrakkerServerTests
 {
     [TestClass]
     public class TreeComparisonTests
     {
-        private static IEnumerable<FileSystemNode> CompareFlatListsRecursive(List<FileSystemNode> list1,
-            List<FileSystemNode> list2)
+        private static IEnumerable<FileSystemNode> CompareFlatListsRecursive(List<FileSystemNode> firstList,
+            List<FileSystemNode> secondList)
         {
             var itemMapping = new Dictionary<string, FileSystemNode>();
             var visited = new Dictionary<string, bool>();
 
-            foreach (var item1 in list1)
+            foreach (var item1 in firstList)
             {
                 visited[item1.FullPath] = false;
                 itemMapping[item1.FullPath] = item1;
             }
 
-            foreach (var item2 in list2)
+            foreach (var item2 in secondList)
             {
                 var item2dir = item2 as DirectoryInfo;
                 var isDir = item2dir != null;
-                var item2file = item2 as FileInfo;
 
-                // Modified
                 if (itemMapping.TryGetValue(item2.FullPath, out var existingItem))
                 {
                     visited[item2.FullPath] = true;
-
+                    // UnChanged
                     if (existingItem.Size == item2.Size)
                     {
                         yield return existingItem;
                     }
+                    // Modified
                     else
                     {
                         if (isDir)
                         {
                             var item1dir = existingItem as DirectoryInfo;
-                            yield return new ChangedDirectory()
-                            {
-                                FullPath = item2dir.FullPath,
-                                Children = new List<FileSystemNode>(
-                                    CompareFlatListsRecursive(item1dir.Children, item2dir.Children)),
-                                OldFileSystemNode = item1dir,
-                                Size = item2dir.Size,
-                                Status = ChangedSystemNodeStatus.Modified
-                            };
+                            yield return new ChangedDirectory(item2.FullPath, item2.Size,
+                                ChangedSystemNodeStatus.Modified, new List<FileSystemNode>(
+                                    CompareFlatListsRecursive(item1dir?.Children, item2dir.Children)), item1dir);
                         }
                         else
                         {
-                            yield return new ChangedFile()
-                            {
-                                FullPath = existingItem.FullPath,
-                                OldFileSystemNode = existingItem,
-                                Size = item2.Size,
-                                Status = ChangedSystemNodeStatus.Modified
-                            };
+                            yield return new ChangedFile(existingItem.FullPath, item2.Size,
+                                ChangedSystemNodeStatus.Modified, existingItem);
                         }
                     }
                 }
@@ -74,28 +63,19 @@ namespace TrakkerServerTests
                 {
                     if (isDir)
                     {
-                        yield return new ChangedDirectory()
-                        {
-                            FullPath = item2.FullPath,
-                            Size = item2.Size,
-                            Status = ChangedSystemNodeStatus.New,
-                            Children = item2dir.Children
-                        };
+                        // TODO: Make all children New.
+                        yield return new ChangedDirectory(item2.FullPath, item2.Size, ChangedSystemNodeStatus.New,
+                            item2dir.Children);
                     }
                     else
                     {
-                        yield return new ChangedFile()
-                        {
-                            FullPath = item2.FullPath,
-                            Size = item2.Size,
-                            Status = ChangedSystemNodeStatus.New
-                        };
+                        yield return new ChangedFile(item2.FullPath, item2.Size, ChangedSystemNodeStatus.New);
                     }
                 }
             }
 
             // Deleted
-            foreach (var item1 in list1)
+            foreach (var item1 in firstList)
             {
                 var item1dir = item1 as DirectoryInfo;
                 var isDir = item1dir != null;
@@ -104,27 +84,29 @@ namespace TrakkerServerTests
                 {
                     if (isDir)
                     {
-                        yield return new ChangedDirectory()
-                        {
-                            FullPath = item1.FullPath,
-                            OldFileSystemNode = item1,
-                            Size = 0,
-                            Status = ChangedSystemNodeStatus.Deleted,
-                            Children = item1dir.Children
-                        };
+                        // TODO: Make all children deleted.
+                        yield return new ChangedDirectory(item1.FullPath, 0, ChangedSystemNodeStatus.Deleted,
+                            item1dir.Children, item1);
                     }
                     else
                     {
-                        yield return new ChangedFile()
-                        {
-                            FullPath = item1.FullPath,
-                            OldFileSystemNode = item1,
-                            Size = 0,
-                            Status = ChangedSystemNodeStatus.Deleted
-                        };
+                        yield return new ChangedFile(item1.FullPath, 0, ChangedSystemNodeStatus.Deleted, item1);
                     }
                 }
             }
+        }
+
+        [TestMethod]
+        public void CompareTreeTestUsingSnapshot()
+        {
+            
+            var snapshotProvider = new global::SnapshotProvider.SnapshotProvider();
+            var drive1 = snapshotProvider.GetDriveInfo(@"C:\");
+            var x = 1;
+            var drive2 = snapshotProvider.GetDriveInfo(@"C:\");
+            var z = 1;
+            var diff = CompareFlatListsRecursive(drive1.Children, drive2.Children).ToList();
+            var y = 1;
         }
 
         [TestMethod]
