@@ -32,6 +32,8 @@ namespace TrakkerServerTests
 
             #endregion
 
+            #region Check for New Modified and UnChanged
+
             foreach (var item2 in secondList)
             {
                 var item2dir = item2 as DirectoryInfo;
@@ -77,7 +79,9 @@ namespace TrakkerServerTests
                     }
                 }
             }
+            #endregion
 
+            #region Check for Deleted
             // Deleted
             foreach (var item1 in firstList)
             {
@@ -98,6 +102,7 @@ namespace TrakkerServerTests
                     }
                 }
             }
+            #endregion
         }
 
         private static IEnumerable<FileSystemNode> ChangeStatusForChildren(List<FileSystemNode> children,
