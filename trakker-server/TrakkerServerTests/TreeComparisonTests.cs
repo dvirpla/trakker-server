@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TrakkerModels;
 using TrakkerServer;
 using DirectoryInfo = TrakkerModels.DirectoryInfo;
+using DriveInfo = TrakkerModels.DriveInfo;
 using FileInfo = TrakkerModels.FileInfo;
 using SnapshotProvider = SnapshotProvider.SnapshotProvider;
 
@@ -25,16 +26,14 @@ namespace TrakkerServerTests
 
             var snapshotProvider = new global::SnapshotProvider.SnapshotProvider();
             var drive1 = snapshotProvider.GetDriveInfo(@"C:\");
-            var x = 1;
             var drive2 = snapshotProvider.GetDriveInfo(@"C:\");
-            var z = 1;
             var diff = SnapshotComparator.CompareListsRecursive(drive1.Children, drive2.Children).ToList();
-            var y = 1;
         }
 
         [TestMethod]
         public void CompareTreeTest()
         {
+            // Arrange
             var root1 = new TrakkerModels.DirectoryInfo("C:\\root", new List<FileSystemNode>()
             {
                 new TrakkerModels.DirectoryInfo("C:\\root\\unchanged", new List<FileSystemNode>()
@@ -60,8 +59,26 @@ namespace TrakkerServerTests
                 new TrakkerModels.FileInfo(350, "C:\\root\\modified.txt"),
                 new TrakkerModels.FileInfo(2, "C:\\root\\unchanged.txt")
             });
-            var x = SnapshotComparator.CompareListsRecursive(root1.Children, root2.Children).ToList();
-            var y = 1;
+            var snapshotOne = new Snapshot() { Time = DateTime.Now, Uuid = Guid.NewGuid(), Drive = new DriveInfo(@"C:\", root1)};
+            var snapshotTwo = new Snapshot() { Time = DateTime.Now, Uuid = Guid.NewGuid(), Drive = new DriveInfo(@"C:\", root2)};
+
+            // Act
+            var comparedSnapshot = SnapshotComparator.CompareSnapshots(snapshotOne, snapshotTwo);
+            // Assert
+            Assert.IsInstanceOfType(comparedSnapshot, typeof(ChangedDirectory));
+            if (comparedSnapshot is ChangedDirectory comparedSnapshotAsDirectory)
+            {
+                // Check New
+                var newDir = comparedSnapshotAsDirectory.Children.Find(x => x.FullPath == "C:\\root\\new"); 
+                var newDirChanged = newDir as ChangedDirectory;
+                Assert.IsInstanceOfType(newDir, typeof(ChangedDirectory));
+                Assert.AreEqual(newDirChanged.Status, ChangedSystemNodeStatus.New);
+                // Check Modified
+                var modifiedFile = comparedSnapshotAsDirectory.Children.Find(x => x.FullPath == "C:\\root\\modified.txt");
+                var modifiedFileChanged = modifiedFile as ChangedFile;
+                Assert.IsInstanceOfType(modifiedFile, typeof(ChangedFile));
+                Assert.AreEqual(modifiedFileChanged.Status, ChangedSystemNodeStatus.Modified);
+            }
         }
     }
 }
